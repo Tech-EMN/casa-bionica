@@ -8,11 +8,11 @@ import os
 
 import httpx
 
-from ..config import settings
-
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rkiclxviqinciwwumwfb.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "sb_secret_***")  
-# Key is set via Railway env var or falls back to config
+SUPABASE_URL = os.getenv(
+    "SUPABASE_URL",
+    "https://rkiclxviqinciwwumwfb.supabase.co",
+)
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 
 HEADERS = {
     "apikey": SUPABASE_KEY,
