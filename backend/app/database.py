@@ -12,7 +12,7 @@ SUPABASE_URL = os.getenv(
     "SUPABASE_URL",
     "https://rkiclxviqinciwwumwfb.supabase.co",
 )
-SUPABASE_KEY = ***"SUPABASE_KEY", "")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 
 
 def get_headers():
