@@ -1,4 +1,4 @@
-"""Casa Biônica — FastAPI app (PostgREST backend v0.2.0)."""
+"""Casa Biônica — FastAPI app (PostgREST backend v0.2.1)."""
 
 import logging
 
@@ -30,7 +30,7 @@ logger = structlog.get_logger()
 app = FastAPI(
     title="Casa Biônica",
     description="Sistema de monitoramento de idosos — PostgREST backend v0.2",
-    version="0.2.0-postgrest",
+    version="0.2.1",
     debug=(settings.app_env == "development"),
 )
 
@@ -47,7 +47,7 @@ app.include_router(status_router)
 
 @app.get("/")
 def root():
-    return {"name": "Casa Biônica", "version": "0.2.0-postgrest",
+    return {"name": "Casa Biônica", "version": "0.2.1",
             "status": "running", "home_id": settings.home_id, "docs": "/docs"}
 
 
