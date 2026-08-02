@@ -1,4 +1,4 @@
-"""Casa Biônica — FastAPI app (sync)."""
+"""Casa Biônica — FastAPI app (PostgREST backend v0.2.0)."""
 
 import logging
 
@@ -9,7 +9,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .middleware.error_handler import rfc9457_error_handler
 from .middleware.trace_id import TraceIDMiddleware
-from .routers import alerts, baseline, events, ingest, status
+from .routers.events import router as events_router
+from .routers.ingest import router as ingest_router
+from .routers.status import alerts_router, baseline_router, status_router
 
 structlog.configure(
     processors=[
@@ -27,8 +29,8 @@ logger = structlog.get_logger()
 
 app = FastAPI(
     title="Casa Biônica",
-    description="Sistema de monitoramento de idosos por sensores ToF",
-    version="0.1.1-psycopg2",
+    description="Sistema de monitoramento de idosos — PostgREST backend v0.2",
+    version="0.2.0-postgrest",
     debug=(settings.app_env == "development"),
 )
 
@@ -36,16 +38,16 @@ app.add_middleware(TraceIDMiddleware)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 app.add_exception_handler(Exception, rfc9457_error_handler)
 
-app.include_router(ingest.router)
-app.include_router(events.router)
-app.include_router(baseline.router)
-app.include_router(alerts.router)
-app.include_router(status.router)
+app.include_router(ingest_router)
+app.include_router(events_router)
+app.include_router(baseline_router)
+app.include_router(alerts_router)
+app.include_router(status_router)
 
 
 @app.get("/")
 def root():
-    return {"name": "Casa Biônica", "version": "0.1.1-psycopg2",
+    return {"name": "Casa Biônica", "version": "0.2.0-postgrest",
             "status": "running", "home_id": settings.home_id, "docs": "/docs"}
 
 

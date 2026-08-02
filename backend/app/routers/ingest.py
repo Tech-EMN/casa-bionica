@@ -1,19 +1,18 @@
-"""Casa Biônica — POST /ingest"""
+"""Casa Biônica — POST /ingest (PostgREST backend)."""
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
+from httpx import HTTPError
 
-from ..database import get_db
 from ..schemas import CrossingEventCreate, CrossingEventResponse
-from ..services.ingest_service import DuplicateEventError, IngestService
+from ..services.ingest_service import IngestService
 
 router = APIRouter(tags=["ingest"])
 
 
 @router.post("/ingest", response_model=CrossingEventResponse, status_code=201)
-def ingest_event(payload: CrossingEventCreate, db: Session = Depends(get_db)):
-    ingest = IngestService(db)
+def ingest_event(payload: CrossingEventCreate):
     try:
-        return ingest.ingest(payload)
-    except DuplicateEventError:
-        raise HTTPException(status_code=409, detail="Duplicate event")
+        result = IngestService().ingest(payload)
+        return result
+    except HTTPError as e:
+        raise HTTPException(status_code=502, detail=f"Supabase error: {e}")

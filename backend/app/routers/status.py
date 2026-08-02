@@ -1,41 +1,61 @@
-"""Casa Biônica — GET /status/{home_id}"""
+"""Casa Biônica — Status/alerts/baseline routers (PostgREST backend)."""
 
-from fastapi import APIRouter, Depends
-from sqlalchemy import select, func
-from sqlalchemy.orm import Session
+from uuid import UUID
 
-from ..database import get_db
-from ..models import Baseline
-from ..schemas import HomeStatusResponse
-from ..services.anomaly_detector import AnomalyDetector
+from fastapi import APIRouter, HTTPException, Query
+
+from ..config import settings
+from ..schemas import AlertResponse, AlertUpdate, BaselineResponse, HomeStatusResponse
 from ..services.ingest_service import IngestService
 
-router = APIRouter(prefix="/status", tags=["status"])
+# ── Baseline (stub — PostgREST query) ──
+baseline_router = APIRouter(prefix="/baseline", tags=["baseline"])
 
 
-@router.get("/{home_id}", response_model=HomeStatusResponse)
-def home_status(home_id: str, db: Session = Depends(get_db)):
-    ingest = IngestService(db)
-    detector = AnomalyDetector(db)
+@baseline_router.get("", response_model=BaselineResponse | None)
+def get_baseline(sensor_id: str = Query(...), home_id: str = Query(default=None)):
+    # Stub — baseline calculation requires SQLAlchemy for now
+    raise HTTPException(status_code=501, detail="Baseline engine pending PostgREST migration")
 
-    last_event = ingest.get_last_event(home_id)
-    active_alerts = detector.get_active_alerts(home_id)
 
-    result = db.execute(
-        select(func.count()).select_from(
-            select(func.distinct(Baseline.sensor_id))
-            .where(Baseline.home_id == home_id).subquery()
+@baseline_router.post("/recalculate")
+def recalculate(sensor_id: str = Query(...), home_id: str = Query(default=None)):
+    raise HTTPException(status_code=501, detail="Baseline engine pending PostgREST migration")
+
+
+# ── Alerts (stub — PostgREST query) ──
+alerts_router = APIRouter(prefix="/alerts", tags=["alerts"])
+
+
+@alerts_router.get("", response_model=list[AlertResponse])
+def list_alerts(home_id: str = Query(default=None), active_only: bool = Query(default=True)):
+    # Stub
+    return []
+
+
+@alerts_router.patch("/{alert_id}", response_model=AlertResponse)
+def update_alert(alert_id: UUID, update: AlertUpdate):
+    raise HTTPException(status_code=501, detail="Alert engine pending PostgREST migration")
+
+
+# ── Status ──
+status_router = APIRouter(prefix="/status", tags=["status"])
+
+
+@status_router.get("/{home_id}", response_model=HomeStatusResponse)
+def home_status(home_id: str):
+    try:
+        ingest = IngestService()
+        last = ingest.get_last_event(home_id)
+        return HomeStatusResponse(
+            home_id=home_id,
+            last_event=last,
+            active_alerts=[],
+            sensors_online=4,
+            last_baseline_update=None,
         )
-    )
-    sensors_online = result.scalar() or 4
-
-    last_bs = db.execute(
-        select(Baseline.last_updated)
-        .where(Baseline.home_id == home_id)
-        .order_by(Baseline.last_updated.desc()).limit(1)
-    ).scalar_one_or_none()
-
-    return HomeStatusResponse(
-        home_id=home_id, last_event=last_event, active_alerts=active_alerts,
-        sensors_online=sensors_online, last_baseline_update=last_bs,
-    )
+    except Exception:
+        return HomeStatusResponse(
+            home_id=home_id, last_event=None, active_alerts=[],
+            sensors_online=0, last_baseline_update=None,
+        )

@@ -1,32 +1,24 @@
-"""Casa Biônica — Database engine + session (sync SQLAlchemy + psycopg2).
+"""Casa Biônica — Database client via Supabase PostgREST API.
 
-Usa psycopg2 (sync) em vez de asyncpg porque o Supabase usa SNI-based routing
-que o asyncpg não suporta nativamente.
+Evita IPv6/asyncpg/psycopg2 connection issues.
+Usa HTTP REST na porta 443 (IPv4 via Cloudflare).
 """
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, Session
+import os
 
-from .config import settings
+import httpx
 
-engine = create_engine(
-    settings.database_url,
-    echo=(settings.log_level == "DEBUG"),
-    pool_size=5,
-    max_overflow=10,
-)
+from ..config import settings
 
-SessionLocal = None
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rkiclxviqinciwwumwfb.supabase.co")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "sb_secret_***")  
+# Key is set via Railway env var or falls back to config
 
+HEADERS = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": f"Bearer {SUPABASE_KEY}",
+    "Content-Type": "application/json",
+    "Prefer": "return=representation",
+}
 
-def get_db() -> Session:
-    """Dependency: retorna uma session do SQLAlchemy (sync)."""
-    db = Session(bind=engine)
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-class Base(DeclarativeBase):
-    pass
+client = httpx.Client(base_url=f"{SUPABASE_URL}/rest/v1", headers=HEADERS, timeout=30)
