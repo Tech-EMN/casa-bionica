@@ -1,27 +1,32 @@
-"""Casa Biônica — Database engine + session (async SQLAlchemy 2.0)."""
+"""Casa Biônica — Database engine + session (sync SQLAlchemy + psycopg2).
 
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase
+Usa psycopg2 (sync) em vez de asyncpg porque o Supabase usa SNI-based routing
+que o asyncpg não suporta nativamente.
+"""
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, Session
 
 from .config import settings
 
-engine = create_async_engine(
+engine = create_engine(
     settings.database_url,
     echo=(settings.log_level == "DEBUG"),
     pool_size=5,
     max_overflow=10,
 )
 
-async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+SessionLocal = None
+
+
+def get_db() -> Session:
+    """Dependency: retorna uma session do SQLAlchemy (sync)."""
+    db = Session(bind=engine)
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 class Base(DeclarativeBase):
     pass
-
-
-async def get_db() -> AsyncSession:
-    async with async_session() as session:
-        try:
-            yield session
-        finally:
-            await session.close()

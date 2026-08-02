@@ -2,9 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# System dependencies for asyncpg
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+    build-essential libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY backend/requirements.txt .
@@ -14,5 +13,4 @@ COPY backend/ .
 
 EXPOSE 8000
 
-# Shell form: $PORT expands from Railway env var
-CMD sh -c "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+CMD sh -c "uvicorn app.main:app --host 0.0.0.0 --port \${PORT:-8000}"
