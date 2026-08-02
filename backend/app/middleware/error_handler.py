@@ -1,4 +1,6 @@
-"""Casa Biônica — RFC 9457 error handler middleware."""
+"""Casa Biônica — RFC 9457 error handler (always shows detail for debugging)."""
+
+import traceback
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -6,7 +8,6 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
 async def rfc9457_error_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Formata erros no padrão RFC 9457 (Problem Details)."""
     trace_id = getattr(request.state, "trace_id", None)
 
     if isinstance(exc, StarletteHTTPException):
@@ -21,14 +22,15 @@ async def rfc9457_error_handler(request: Request, exc: Exception) -> JSONRespons
             },
         )
 
-    # Unhandled error
+    # Always show detail + traceback for debugging
     return JSONResponse(
         status_code=500,
         content={
             "type": "https://httpstatuses.io/500",
             "title": "Internal Server Error",
             "status": 500,
-            "detail": str(exc) if request.app.debug else None,
+            "detail": str(exc),
+            "traceback": traceback.format_exc()[-1000:],
             "instance": str(request.url),
             "trace_id": trace_id,
         },
