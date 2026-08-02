@@ -28,7 +28,7 @@ logger = structlog.get_logger()
 app = FastAPI(
     title="Casa Biônica",
     description="Sistema de monitoramento de idosos por sensores ToF",
-    version="0.1.0-walking-skeleton",
+    version="0.1.1-psycopg2",
     debug=(settings.app_env == "development"),
 )
 
@@ -45,7 +45,7 @@ app.include_router(status.router)
 
 @app.get("/")
 def root():
-    return {"name": "Casa Biônica", "version": "0.1.0-walking-skeleton",
+    return {"name": "Casa Biônica", "version": "0.1.1-psycopg2",
             "status": "running", "home_id": settings.home_id, "docs": "/docs"}
 
 
