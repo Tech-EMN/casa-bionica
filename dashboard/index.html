@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Biônica — Dashboard</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --card: #1a1d27;
+            --border: #2a2d3a;
+            --text: #e1e4ed;
+            --muted: #6b7280;
+            --green: #22c55e;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --blue: #3b82f6;
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 24px;
+        }
+        h1 { font-size: 1.5rem; margin-bottom: 4px; }
+        .subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .card h2 { font-size: 0.85rem; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; letter-spacing: .5px; }
+        .status-dot {
+            display: inline-block; width: 10px; height: 10px;
+            border-radius: 50%; margin-right: 8px;
+        }
+        .dot-green { background: var(--green); }
+        .dot-red { background: var(--red); }
+        .metric { font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .metric-label { color: var(--muted); font-size: 0.8rem; }
+        .alert-card {
+            border-left: 3px solid var(--red);
+            margin-bottom: 8px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.08);
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+        .alert-card .sensor { font-weight: 600; }
+        .alert-card .time { color: var(--muted); font-size: 0.8rem; }
+        .alert-card .msg { margin-top: 4px; font-size: 0.85rem; }
+        .timeline { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; }
+        .timeline-row { display: flex; gap: 12px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+        .timeline-sensor { color: var(--blue); min-width: 80px; }
+        .timeline-dir { min-width: 40px; }
+        .dir-entry { color: var(--green); }
+        .dir-exit { color: var(--amber); }
+        .btn {
+            background: var(--blue); color: white; border: none;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+        }
+        .error { color: var(--red); font-size: 0.8rem; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <h1>🏠 Casa Biônica</h1>
+    <p class="subtitle">Walking Skeleton — <span id="homeId">carregando...</span></p>
+
+    <div class="grid">
+        <!-- Status -->
+        <div class="card">
+            <h2>Status</h2>
+            <div id="statusContent">
+                <span class="status-dot dot-green"></span> Online
+                <p class="metric-label">Último evento</p>
+                <p id="lastEvent">—</p>
+                <p class="metric-label" style="margin-top:8px">Sensores online</p>
+                <p class="metric" id="sensorCount">4</p>
+                <p class="metric-label">Alertas ativos</p>
+                <p class="metric" id="alertCount" style="color: var(--red)">0</p>
+            </div>
+            <p class="error" id="statusError"></p>
+        </div>
+
+        <!-- Alertas -->
+        <div class="card">
+            <h2>🚨 Alertas</h2>
+            <div id="alertsContent"><p style="color: var(--muted)">Nenhum alerta ativo</p></div>
+        </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="card" style="margin-top: 16px;">
+        <h2>📊 Timeline (últimas 24h)</h2>
+        <div class="timeline" id="timeline"><p style="color: var(--muted)">Carregando...</p></div>
+    </div>
+
+    <!-- Debug: Inject event -->
+    <div class="card" style="margin-top: 16px;" id="debugCard">
+        <h2>🔧 Debug — Injetar Evento</h2>
+        <select id="debugSensor" style="margin-right:8px;padding:4px">
+            <option value="sensor-quarto-01">Quarto</option>
+            <option value="sensor-banheiro-01">Banheiro</option>
+            <option value="sensor-cozinha-01">Cozinha</option>
+            <option value="sensor-sala-01">Sala</option>
+        </select>
+        <select id="debugDir" style="margin-right:8px;padding:4px">
+            <option value="entry">Entrada</option>
+            <option value="exit">Saída</option>
+        </select>
+        <button class="btn" onclick="injectEvent()">Injetar</button>
+        <p class="error" id="debugError"></p>
+    </div>
+
+    <script>
+        const API = '';  // Same origin
+        const HOME_ID = 'home-001';
+
+        async function loadStatus() {
+            try {
+                const res = await fetch(`${API}/status/${HOME_ID}`);
+                if (!res.ok) throw new Error(await res.text());
+                const data = await res.json();
+                document.getElementById('homeId').textContent = data.home_id;
+                document.getElementById('sensorCount').textContent = data.sensors_online;
+                document.getElementById('alertCount').textContent = data.active_alerts.length;
+                if (data.last_event) {
+                    const e = data.last_event;
+                    document.getElementById('lastEvent').textContent =
+                        `${e.sensor_id.replace('sensor-','')} — ${e.direction} — ${new Date(e.event_timestamp).toLocaleTimeString('pt-BR')}`;
+                }
+                // Alerts
+                const alertsDiv = document.getElementById('alertsContent');
+                if (data.active_alerts.length === 0) {
+                    alertsDiv.innerHTML = '<p style="color: var(--muted)">Nenhum alerta ativo</p>';
+                } else {
+                    alertsDiv.innerHTML = data.active_alerts.map(a => `
+                        <div class="alert-card">
+                            <div class="sensor">${a.sensor_id.replace('sensor-', '')}</div>
+                            <div class="time">${new Date(a.triggered_at).toLocaleString('pt-BR')}</div>
+                            <div class="msg">${a.message || ''}</div>
+                        </div>
+                    `).join('');
+                }
+                document.getElementById('statusError').textContent = '';
+            } catch (e) {
+                document.getElementById('statusError').textContent = 'Erro: ' + e.message;
+            }
+        }
+
+        async function loadTimeline() {
+            try {
+                const from = new Date(Date.now() - 24*3600*1000).toISOString();
+                const res = await fetch(`${API}/events?home_id=${HOME_ID}&from=${from}&limit=50`);
+                const events = await res.json();
+                const tl = document.getElementById('timeline');
+                if (events.length === 0) {
+                    tl.innerHTML = '<p style="color: var(--muted)">Nenhum evento nas últimas 24h</p>';
+                    return;
+                }
+                tl.innerHTML = events.map(e => `
+                    <div class="timeline-row">
+                        <span class="timeline-sensor">${e.sensor_id.replace('sensor-','')}</span>
+                        <span class="timeline-dir ${e.direction === 'entry' ? 'dir-entry' : 'dir-exit'}">${e.direction === 'entry' ? '▶ IN' : '◀ OUT'}</span>
+                        <span>${e.distance_mm}mm</span>
+                        <span style="margin-left:auto;color:var(--muted)">${new Date(e.event_timestamp).toLocaleTimeString('pt-BR')}</span>
+                    </div>
+                `).join('');
+            } catch (e) {
+                document.getElementById('timeline').innerHTML = '<p style="color: var(--red)">Erro ao carregar timeline</p>';
+            }
+        }
+
+        async function injectEvent() {
+            const sensor = document.getElementById('debugSensor').value;
+            const dir = document.getElementById('debugDir').value;
+            const dist = Math.floor(1000 + Math.random() * 300);
+            try {
+                const res = await fetch(`${API}/ingest`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        sensor_id: sensor,
+                        home_id: HOME_ID,
+                        direction: dir,
+                        distance_mm: dist,
+                        event_timestamp: new Date().toISOString()
+                    })
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || 'Unknown error');
+                }
+                document.getElementById('debugError').textContent = '';
+                loadStatus();
+                loadTimeline();
+            } catch (e) {
+                document.getElementById('debugError').textContent = 'Erro: ' + e.message;
+            }
+        }
+
+        // Init
+        loadStatus();
+        loadTimeline();
+        setInterval(() => { loadStatus(); loadTimeline(); }, 10000);
+    </script>
+</body>
+</html>
