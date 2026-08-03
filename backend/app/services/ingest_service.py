@@ -110,14 +110,26 @@ class IngestService:
     # ── Presence (Q10=C) ───────────────────────────────
     def get_presence(self, home_id: str) -> dict:
         """Determina se idoso está em casa baseado no último evento de entrada."""
-        # Último evento de qualquer device de entrada
+        # Get devices of type entrance for this home
+        resp = self.client.get(
+            "/devices",
+            params={
+                "select": "id,sensor_id,passages!inner(passage_type)",
+                "home_id": f"eq.{home_id}",
+                "passages.passage_type": "eq.entrance",
+            },
+        )
+        resp.raise_for_status()
+        entrance_devices = resp.json()
+        if not entrance_devices:
+            return {"home_id": home_id, "presence": "unknown", "last_entrance_event": None}
+
+        device_ids = [d["id"] for d in entrance_devices]
         resp = self.client.get(
             "/events",
             params={
-                "select": "id,device_id,direction,event_timestamp,"
-                          "devices!inner(sensor_id,home_id,passages!inner(passage_type))",
-                "devices.home_id": f"eq.{home_id}",
-                "devices.passages.passage_type": "eq.entrance",
+                "select": "id,device_id,direction,event_timestamp",
+                "device_id": f"in.({','.join(device_ids)})",
                 "order": "event_timestamp.desc",
                 "limit": "1",
             },
