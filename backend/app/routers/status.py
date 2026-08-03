@@ -14,7 +14,7 @@ def home_status(home_id: str):
     client = get_client()
 
     # Home info — query by home_id (text field, not UUID)
-    resp = client.get("/homes", params={"home_id_text": f"eq.{home_id}", "limit": "1"})
+    resp = client.get("/homes", params={"home_id": f"eq.{home_id}", "limit": "1"})
     resp.raise_for_status()
     homes = resp.json()
     if not homes:
