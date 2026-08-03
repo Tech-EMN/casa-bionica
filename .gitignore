@@ -20,3 +20,5 @@ Thumbs.db
 
 # Supabase
 supabase/.temp/
+__pycache__/
+*.pyc
