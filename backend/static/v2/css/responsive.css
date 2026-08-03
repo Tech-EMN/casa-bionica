@@ -1,0 +1,149 @@
+/* Responsive — mobile-first with deliberate breakpoints */
+
+/* ── Default: Mobile (< 640px) ── */
+.app-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-md);
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) 0;
+  margin-bottom: var(--space-lg);
+}
+
+.app-header__logo {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.app-header__actions {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.app-header__btn {
+  background: var(--color-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-md);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.app-header__btn:hover {
+  background: var(--color-border);
+}
+
+.app-header__btn--accent {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+.app-header__btn--accent:hover {
+  filter: brightness(1.1);
+}
+
+.app-error-banner {
+  background: #fef0f0;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  display: none;
+}
+
+.app-error-banner--visible {
+  display: block;
+}
+
+.app-footer {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-md);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.app-footer a {
+  color: var(--color-muted);
+  text-decoration: underline;
+}
+
+/* ── Tablet (640-1024px) ── */
+@media (min-width: 640px) {
+  .app-container {
+    max-width: 960px;
+    padding: var(--space-lg);
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+  }
+
+  .app-grid__full {
+    grid-column: 1 / -1;
+  }
+
+  .house-grid {
+    min-height: 420px;
+  }
+
+  .care-network__contacts {
+    gap: var(--space-md);
+  }
+
+  .contact-card {
+    width: 220px;
+  }
+}
+
+/* ── Desktop (> 1024px) ── */
+@media (min-width: 1024px) {
+  .app-container {
+    max-width: 1280px;
+  }
+
+  .app-grid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+
+  .house-grid {
+    min-height: 500px;
+    gap: var(--space-md);
+  }
+
+  .app-header__logo {
+    font-size: 1.5rem;
+  }
+}
+
+/* ── High-DPI / Retina ── */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

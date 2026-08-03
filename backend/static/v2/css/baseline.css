@@ -1,0 +1,164 @@
+/* Baseline Weekly — Real vs Expected room occupancy */
+/* Anti-slop: heatmap-style comparison, not generic bar chart */
+
+.baseline-weekly {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--space-lg);
+}
+
+.baseline-weekly__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin-bottom: var(--space-md);
+}
+
+.baseline-weekly__subtitle {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-bottom: var(--space-lg);
+  font-weight: 400;
+}
+
+/* ── Room Selector ── */
+.baseline-room-selector {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.baseline-room-btn {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.baseline-room-btn:hover {
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.baseline-room-btn--active {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+/* ── Week Grid ── */
+.baseline-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-sm);
+}
+
+.baseline-day {
+  text-align: center;
+}
+
+.baseline-day__label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.baseline-day__label--today {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* ── Bars ── */
+.baseline-bars {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 100px;
+  justify-content: flex-end;
+}
+
+.baseline-bar {
+  width: 100%;
+  max-width: 40px;
+  border-radius: 3px;
+  position: relative;
+  transition: height var(--duration-base) var(--ease-out);
+}
+
+.baseline-bar--real {
+  background: var(--color-accent);
+  opacity: 0.8;
+}
+
+.baseline-bar--baseline {
+  background: var(--color-border);
+}
+
+.baseline-bar--deviation {
+  background: var(--color-warning);
+}
+
+.baseline-bar__value {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+/* ── Deviation Badge ── */
+.baseline-deviation {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-xs);
+}
+
+.baseline-deviation--normal {
+  background: rgba(91, 140, 90, 0.1);
+  color: var(--color-accent2);
+}
+
+.baseline-deviation--warning {
+  background: rgba(232, 168, 56, 0.1);
+  color: var(--color-warning);
+}
+
+.baseline-deviation--critical {
+  background: rgba(199, 80, 80, 0.1);
+  color: var(--color-danger);
+}
+
+/* ── Summary ── */
+.baseline-summary {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.85rem;
+}
+
+.baseline-summary--ok {
+  color: var(--color-accent2);
+}
+
+.baseline-summary--warn {
+  color: var(--color-warning);
+}
+
+/* ── Loading ── */
+.baseline-loading {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--color-muted);
+}

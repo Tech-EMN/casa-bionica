@@ -1,0 +1,270 @@
+/* Floor Plan — Planta da Casa como Interface Principal */
+/* CSS Grid house layout with animated sensor dots */
+
+.floor-plan {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--space-lg);
+}
+
+.floor-plan__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.floor-plan__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--color-text);
+}
+
+.floor-plan__home-selector {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  background: var(--color-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-md);
+  cursor: pointer;
+}
+
+/* ── Grid Layout ── */
+.house-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "quarto   corredor  cozinha"
+    "banheiro corredor  sala"
+    "banheiro entrada   sala";
+  gap: var(--space-sm);
+  min-height: 380px;
+}
+
+/* ── Rooms ── */
+.room {
+  position: relative;
+  background: var(--color-hover);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: background var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
+  min-height: 90px;
+  cursor: default;
+}
+
+.room:hover {
+  background: #f0ebe3;
+}
+
+.room--active {
+  background: #fdf0e8;
+  border-color: var(--color-accent);
+  border-width: 2px;
+}
+
+.room--alert {
+  background: #fef0f0;
+  border-color: var(--color-danger);
+  animation: room-alert-pulse 2s ease-in-out infinite;
+}
+
+.room__emoji {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-xs);
+}
+
+.room__label {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.room__duration {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: var(--space-xs);
+}
+
+.room__duration--warning {
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.room__duration--critical {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+/* ── Sensor Dots ── */
+.sensor-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-muted);
+  border: 2px solid var(--color-surface);
+  transition: background var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+  z-index: 2;
+}
+
+.sensor-dot--active {
+  background: var(--color-accent2);
+}
+
+.sensor-dot--last {
+  background: var(--color-accent);
+  animation: dot-pulse 1.5s ease-in-out infinite;
+}
+
+.sensor-dot--alert {
+  background: var(--color-danger);
+  animation: dot-pulse 0.8s ease-in-out infinite;
+}
+
+/* Sensor positions — relative to room edges (passage connectors) */
+.sensor-dot--quarto-corredor  { bottom: -6px; left: 50%; transform: translateX(-50%); }
+.sensor-dot--banheiro-corredor { right: -6px; top: 50%; transform: translateY(-50%); }
+.sensor-dot--cozinha-corredor { bottom: -6px; left: 50%; transform: translateX(-50%); }
+.sensor-dot--sala-corredor    { left: -6px; top: 50%; transform: translateY(-50%); }
+.sensor-dot--entrada          { top: -6px; left: 50%; transform: translateX(-50%); }
+
+/* ── Elderly Profile (overlaid on active room) ── */
+.elderly-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.elderly-profile__photo {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  /* Not perfectly round — anti-slop: no generic round avatars */
+  clip-path: circle(50% at 50% 50%);
+}
+
+.elderly-profile__name {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.elderly-profile__age {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+/* ── Presence Indicator ── */
+.presence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.presence-badge--home {
+  color: var(--color-accent2);
+  background: rgba(91, 140, 90, 0.1);
+}
+
+.presence-badge--away {
+  color: var(--color-warning);
+  background: rgba(232, 168, 56, 0.1);
+}
+
+.presence-badge--unknown {
+  color: var(--color-muted);
+  background: rgba(140, 130, 121, 0.1);
+}
+
+/* ── Legend ── */
+.floor-plan__legend {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-dot--sensor { background: var(--color-muted); }
+.legend-dot--last   { background: var(--color-accent); }
+.legend-dot--alert  { background: var(--color-danger); }
+
+/* ── Animations ── */
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(199, 116, 94, 0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(199, 116, 94, 0); }
+}
+
+@keyframes room-alert-pulse {
+  0%, 100% { background: #fef0f0; }
+  50%      { background: #fce0e0; }
+}
+
+/* ── Grid Area Assignments ── */
+.room--quarto   { grid-area: quarto; }
+.room--banheiro { grid-area: banheiro; }
+.room--cozinha  { grid-area: cozinha; }
+.room--sala     { grid-area: sala; }
+.room--corredor { grid-area: corredor; }
+.room--entrada  { grid-area: entrada; }
+
+/* ── Corridor (visual connector) ── */
+.room--corredor {
+  background: transparent;
+  border: none;
+  min-height: auto;
+  cursor: default;
+  pointer-events: none;
+}
+
+.room--corredor .room__label {
+  color: transparent;
+}
+
+/* ── Entrance (small row at bottom) ── */
+.room--entrada {
+  min-height: 60px;
+  font-size: 0.8rem;
+}

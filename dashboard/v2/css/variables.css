@@ -1,0 +1,89 @@
+/* Casa Biônica "Raízes" — Design Tokens */
+/* Anti-slop: zero Inter, zero purple gradient, zero default shadows */
+
+:root {
+  /* Palette — warm human, not hospital */
+  --color-bg:       #faf7f2;
+  --color-surface:  #ffffff;
+  --color-text:     #1a1815;
+  --color-muted:    #8c8279;
+  --color-accent:   #c7745e;
+  --color-accent2:  #5b8c5a;
+  --color-warning:  #e8a838;
+  --color-danger:   #c75050;
+  --color-border:   #e8e0d5;
+  --color-hover:    #f3ede6;
+
+  /* Typography — Fredoka + Outfit, not Inter */
+  --font-display:   'Fredoka', sans-serif;
+  --font-body:      'Outfit', sans-serif;
+  --font-mono:      'SF Mono', 'Fira Code', monospace;
+
+  /* Spacing */
+  --space-xs:       4px;
+  --space-sm:       8px;
+  --space-md:       16px;
+  --space-lg:       24px;
+  --space-xl:       40px;
+  --space-2xl:      64px;
+
+  /* Radius */
+  --radius-sm:      8px;
+  --radius-md:      16px;
+  --radius-lg:      24px;
+
+  /* Shadows — deliberate, not default */
+  --shadow-soft:    0 2px 8px rgba(26, 24, 21, 0.06);
+  --shadow-card:    0 4px 16px rgba(26, 24, 21, 0.08);
+  --shadow-lift:    0 8px 32px rgba(26, 24, 21, 0.12);
+
+  /* Transitions */
+  --ease-out:       cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:    cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast:  150ms;
+  --duration-base:  300ms;
+  --duration-slow:  600ms;
+}
+
+/* Reset */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+/* Utility: sr-only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}

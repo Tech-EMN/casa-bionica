@@ -1,0 +1,140 @@
+/* Care Network — Emergency contacts with escalation chain */
+/* Anti-slop: horizontal scroll cards, not generic 3-column grid */
+
+.care-network {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--space-lg);
+}
+
+.care-network__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin-bottom: var(--space-sm);
+}
+
+.care-network__subtitle {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-bottom: var(--space-lg);
+}
+
+/* ── Contacts (horizontal scroll on mobile) ── */
+.care-network__contacts {
+  display: flex;
+  gap: var(--space-md);
+  overflow-x: auto;
+  padding-bottom: var(--space-sm);
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.contact-card {
+  flex: 0 0 auto;
+  width: 200px;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-hover);
+  scroll-snap-align: start;
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.contact-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+
+.contact-card__name {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+}
+
+.contact-card__relation {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.contact-card__level {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.contact-card__level--n1 { background: rgba(91, 140, 90, 0.15); color: var(--color-accent2); }
+.contact-card__level--n2 { background: rgba(91, 140, 90, 0.1);  color: var(--color-accent2); }
+.contact-card__level--n3 { background: rgba(232, 168, 56, 0.15); color: var(--color-warning); }
+
+.contact-card__channel {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.contact-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.contact-card__status--available { color: var(--color-accent2); }
+.contact-card__status--busy { color: var(--color-warning); }
+.contact-card__status--offline { color: var(--color-muted); }
+
+/* ── Add Contact Button ── */
+.care-network__add {
+  flex: 0 0 auto;
+  width: 200px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  scroll-snap-align: start;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.care-network__add:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(199, 116, 94, 0.05);
+}
+
+.care-network__add-icon {
+  font-size: 1.5rem;
+}
+
+/* ── Escalation Info ── */
+.care-network__escalation {
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-hover);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.care-network__escalation strong {
+  color: var(--color-text);
+  font-weight: 500;
+}

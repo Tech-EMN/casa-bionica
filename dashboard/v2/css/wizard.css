@@ -1,0 +1,154 @@
+/* Onboarding Wizard — 4-step setup modal */
+
+.wizard-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 24, 21, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fade-in 200ms var(--ease-out);
+}
+
+.wizard-modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lift);
+  animation: slide-up 300ms var(--ease-out);
+}
+
+.wizard-header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wizard-header__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+
+.wizard-header__close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--color-muted);
+  padding: var(--space-xs);
+}
+
+.wizard-body {
+  padding: var(--space-lg);
+}
+
+.wizard-field {
+  margin-bottom: var(--space-md);
+}
+
+.wizard-field__label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text);
+}
+
+.wizard-field__input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: border-color var(--duration-fast);
+}
+
+.wizard-field__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.wizard-field__hint {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: var(--space-xs);
+}
+
+.wizard-steps {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.wizard-step-dot {
+  flex: 1;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  transition: background var(--duration-fast);
+}
+
+.wizard-step-dot--active {
+  background: var(--color-accent);
+}
+
+.wizard-step-dot--done {
+  background: var(--color-accent2);
+}
+
+.wizard-footer {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.wizard-btn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  border: none;
+}
+
+.wizard-btn--secondary {
+  background: var(--color-hover);
+  color: var(--color-muted);
+}
+
+.wizard-btn--primary {
+  background: var(--color-accent);
+  color: white;
+}
+
+.wizard-btn--primary:hover {
+  filter: brightness(1.1);
+}
+
+.wizard-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Animations ── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

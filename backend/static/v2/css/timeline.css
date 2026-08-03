@@ -1,0 +1,157 @@
+/* Timeline — Narrative day story, not a technical log */
+/* Anti-slop: no generic table, no Inter, deliberate asymmetry */
+
+.narrative-timeline {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--space-lg);
+}
+
+.narrative-timeline__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin-bottom: var(--space-lg);
+  color: var(--color-text);
+}
+
+.narrative-timeline__title em {
+  font-style: normal;
+  color: var(--color-accent);
+}
+
+/* ── Day Sections ── */
+.timeline-section {
+  margin-bottom: var(--space-lg);
+}
+
+.timeline-section:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-section__header {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Event Rows ── */
+.timeline-event {
+  display: grid;
+  grid-template-columns: 50px 28px 1fr auto auto;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-hover);
+  animation: event-reveal 400ms var(--ease-out) both;
+}
+
+.timeline-event:last-child {
+  border-bottom: none;
+}
+
+.timeline-event__time {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.timeline-event__emoji {
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.timeline-event__desc {
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.timeline-event__duration {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  text-align: right;
+}
+
+.timeline-event__indicator {
+  width: 24px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.indicator--normal { color: var(--color-accent2); }
+.indicator--warning { color: var(--color-warning); }
+.indicator--critical { color: var(--color-danger); }
+
+/* ── Duration Bar (visual weight) ── */
+.timeline-event__bar {
+  height: 3px;
+  background: var(--color-hover);
+  border-radius: 2px;
+  margin-top: var(--space-xs);
+}
+
+.timeline-event__bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--color-accent2);
+  transition: width var(--duration-slow) var(--ease-out);
+}
+
+.timeline-event__bar-fill--warning {
+  background: var(--color-warning);
+}
+
+.timeline-event__bar-fill--critical {
+  background: var(--color-danger);
+}
+
+/* ── Empty State ── */
+.timeline-empty {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.timeline-empty__emoji {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: var(--space-sm);
+}
+
+/* ── Staggered reveal ── */
+@keyframes event-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.timeline-event:nth-child(1) { animation-delay: 0ms; }
+.timeline-event:nth-child(2) { animation-delay: 60ms; }
+.timeline-event:nth-child(3) { animation-delay: 120ms; }
+.timeline-event:nth-child(4) { animation-delay: 180ms; }
+.timeline-event:nth-child(5) { animation-delay: 240ms; }
+.timeline-event:nth-child(6) { animation-delay: 300ms; }
+.timeline-event:nth-child(7) { animation-delay: 360ms; }
+.timeline-event:nth-child(8) { animation-delay: 420ms; }
+.timeline-event:nth-child(9) { animation-delay: 480ms; }
+.timeline-event:nth-child(10) { animation-delay: 540ms; }
+
+/* ── Current Event Highlight ── */
+.timeline-event--current {
+  background: linear-gradient(90deg, rgba(199, 116, 94, 0.08), transparent);
+  border-radius: var(--radius-sm);
+  padding-left: var(--space-sm);
+}

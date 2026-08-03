@@ -1,8 +1,10 @@
 """Casa Biônica — FastAPI app v2.1."""
 
 import structlog
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from .config import settings
 from .middleware.error_handler import rfc9457_error_handler
@@ -10,6 +12,7 @@ from .middleware.trace_id import TraceIDMiddleware
 from .routers.events import presence_router, router as events_router
 from .routers.ingest import router as ingest_router
 from .routers.status import router as status_router
+from .routers.baseline import router as baseline_router
 
 structlog.configure(
     processors=[
@@ -38,6 +41,12 @@ app.include_router(ingest_router)
 app.include_router(events_router)
 app.include_router(presence_router)
 app.include_router(status_router)
+app.include_router(baseline_router)
+
+# Static files — dashboard v2
+static_dir = Path(__file__).parent.parent / "static" / "v2"
+if static_dir.exists():
+    app.mount("/v2", StaticFiles(directory=str(static_dir), html=True), name="dashboard-v2")
 
 
 @app.get("/")
