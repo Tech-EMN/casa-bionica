@@ -1,6 +1,4 @@
-"""Casa Biônica — FastAPI app (PostgREST backend v0.2.1)."""
-
-import logging
+"""Casa Biônica — FastAPI app v2.1."""
 
 import structlog
 from fastapi import FastAPI
@@ -9,9 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .middleware.error_handler import rfc9457_error_handler
 from .middleware.trace_id import TraceIDMiddleware
-from .routers.events import router as events_router
+from .routers.events import presence_router, router as events_router
 from .routers.ingest import router as ingest_router
-from .routers.status import alerts_router, baseline_router, status_router
+from .routers.status import router as status_router
 
 structlog.configure(
     processors=[
@@ -25,12 +23,10 @@ structlog.configure(
     cache_logger_on_first_use=True,
 )
 
-logger = structlog.get_logger()
-
 app = FastAPI(
     title="Casa Biônica",
-    description="Sistema de monitoramento de idosos — PostgREST backend v0.2",
-    version="0.2.1",
+    description="Monitoramento de idosos por sensores ToF — Schema v2",
+    version="2.1.0",
     debug=(settings.app_env == "development"),
 )
 
@@ -40,14 +36,13 @@ app.add_exception_handler(Exception, rfc9457_error_handler)
 
 app.include_router(ingest_router)
 app.include_router(events_router)
-app.include_router(baseline_router)
-app.include_router(alerts_router)
+app.include_router(presence_router)
 app.include_router(status_router)
 
 
 @app.get("/")
 def root():
-    return {"name": "Casa Biônica", "version": "0.2.1",
+    return {"name": "Casa Biônica", "version": "2.1.0",
             "status": "running", "home_id": settings.home_id, "docs": "/docs"}
 
 

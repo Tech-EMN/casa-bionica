@@ -1,61 +1,80 @@
-"""Casa Biônica — Status/alerts/baseline routers (PostgREST backend)."""
+"""Casa Biônica — GET /status/{home_id} v2."""
 
-from uuid import UUID
+from fastapi import APIRouter
 
-from fastapi import APIRouter, HTTPException, Query
-
-from ..config import settings
-from ..schemas import AlertResponse, AlertUpdate, BaselineResponse, HomeStatusResponse
+from ..database import get_client
+from ..schemas import DeviceStatus, HomeStatusResponse
 from ..services.ingest_service import IngestService
 
-# ── Baseline (stub — PostgREST query) ──
-baseline_router = APIRouter(prefix="/baseline", tags=["baseline"])
+router = APIRouter(prefix="/status", tags=["status"])
 
 
-@baseline_router.get("", response_model=BaselineResponse | None)
-def get_baseline(sensor_id: str = Query(...), home_id: str = Query(default=None)):
-    # Stub — baseline calculation requires SQLAlchemy for now
-    raise HTTPException(status_code=501, detail="Baseline engine pending PostgREST migration")
-
-
-@baseline_router.post("/recalculate")
-def recalculate(sensor_id: str = Query(...), home_id: str = Query(default=None)):
-    raise HTTPException(status_code=501, detail="Baseline engine pending PostgREST migration")
-
-
-# ── Alerts (stub — PostgREST query) ──
-alerts_router = APIRouter(prefix="/alerts", tags=["alerts"])
-
-
-@alerts_router.get("", response_model=list[AlertResponse])
-def list_alerts(home_id: str = Query(default=None), active_only: bool = Query(default=True)):
-    # Stub
-    return []
-
-
-@alerts_router.patch("/{alert_id}", response_model=AlertResponse)
-def update_alert(alert_id: UUID, update: AlertUpdate):
-    raise HTTPException(status_code=501, detail="Alert engine pending PostgREST migration")
-
-
-# ── Status ──
-status_router = APIRouter(prefix="/status", tags=["status"])
-
-
-@status_router.get("/{home_id}", response_model=HomeStatusResponse)
+@router.get("/{home_id}", response_model=HomeStatusResponse)
 def home_status(home_id: str):
-    try:
-        ingest = IngestService()
-        last = ingest.get_last_event(home_id)
-        return HomeStatusResponse(
-            home_id=home_id,
-            last_event=last,
-            active_alerts=[],
-            sensors_online=4,
-            last_baseline_update=None,
+    client = get_client()
+
+    # Home info
+    resp = client.get("/homes", params={"id": f"eq.{home_id}", "limit": "1"})
+    resp.raise_for_status()
+    homes = resp.json()
+    if not homes:
+        *** HomeStatusResponse(home_id=home_id, home_name="unknown", elderly_name="unknown")
+
+    home = homes[0]
+
+    # Devices
+    resp = client.get(
+        "/devices",
+        params={
+            "home_id": f"eq.{home_id}",
+            "select": "sensor_id,status,passages(name,passage_type)",
+        },
+    )
+    resp.raise_for_status()
+    devices = [
+        DeviceStatus(
+            sensor_id=d["sensor_id"],
+            passage_name=d.get("passages", {}).get("name", "?"),
+            passage_type=d.get("passages", {}).get("passage_type", "?"),
+            status=d["status"],
         )
-    except Exception:
-        return HomeStatusResponse(
-            home_id=home_id, last_event=None, active_alerts=[],
-            sensors_online=0, last_baseline_update=None,
-        )
+        for d in resp.json()
+    ]
+
+    # Last event
+    ingest = IngestService()
+    last_event = ingest.get_last_event(home_id)
+
+    # Presence
+    presence = ingest.get_presence(home_id)
+
+    # Alerts
+    resp = client.get(
+        "/alerts",
+        params={
+            "home_id": f"eq.{home_id}",
+            "status": "in.(pending,notified)",
+            "limit": "50",
+        },
+    )
+    resp.raise_for_status()
+    active_alerts = len(resp.json())
+
+    # Emergency contacts
+    resp = client.get(
+        "/emergency_contacts",
+        params={"home_id": f"eq.{home_id}", "order": "priority.asc"},
+    )
+    resp.raise_for_status()
+    contacts = resp.json()
+
+    return HomeStatusResponse(
+        home_id=home_id,
+        home_name=home["name"],
+        elderly_name=home.get("elderly_name", ""),
+        devices=devices,
+        last_event=last_event,
+        active_alerts=active_alerts,
+        presence=presence["presence"],
+        emergency_contacts=contacts,
+    )

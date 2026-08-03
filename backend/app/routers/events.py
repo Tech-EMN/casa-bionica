@@ -1,4 +1,4 @@
-"""Casa Biônica — GET /events (PostgREST backend)."""
+"""Casa Biônica — GET /events, GET /events/last, GET /presence v2."""
 
 from datetime import datetime
 
@@ -6,13 +6,13 @@ from fastapi import APIRouter, Query
 from httpx import HTTPError
 
 from ..config import settings
-from ..schemas import CrossingEventResponse
+from ..schemas import EventResponse, PresenceResponse
 from ..services.ingest_service import IngestService
 
 router = APIRouter(prefix="/events", tags=["events"])
 
 
-@router.get("", response_model=list[CrossingEventResponse])
+@router.get("", response_model=list[EventResponse])
 def list_events(
     home_id: str = Query(default=None),
     sensor_id: str | None = Query(default=None),
@@ -25,13 +25,22 @@ def list_events(
             home_id=home_id or settings.home_id,
             sensor_id=sensor_id, from_ts=from_ts, to_ts=to_ts, limit=limit,
         )
-    except HTTPError as e:
+    except HTTPError:
         return []
 
 
-@router.get("/last", response_model=CrossingEventResponse | None)
+@router.get("/last", response_model=EventResponse | None)
 def get_last_event(home_id: str = Query(default=None)):
     try:
         return IngestService().get_last_event(home_id or settings.home_id)
     except HTTPError:
         return None
+
+
+# ── Presence (Q10=C) ──
+presence_router = APIRouter(prefix="/presence", tags=["presence"])
+
+
+@presence_router.get("/{home_id}", response_model=PresenceResponse)
+def get_presence(home_id: str):
+    return IngestService().get_presence(home_id)
