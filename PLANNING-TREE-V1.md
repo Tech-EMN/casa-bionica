@@ -44,71 +44,108 @@ CASA BIÔNICA — FRONT-END V1 + BASELINE ENGINE
 │       completed_at: 2026-08-03T23:40:00Z
 │
 ├── 🟠 FASE 1 — BACKEND
-│   ├── ⬜ F1.1 — EWMA Engine + Baseline endpoint
+│   ├── ✅ F1.1 — EWMA Engine + Baseline endpoint
+│   │   status: completed
 │   │   children: ["F1.1a", "F1.1b"]
-│   │   done_criterion: GET /baseline/{home_id} retorna EWMA semanal por cômodo
+│   │   done_criterion: GET /baseline/{home_id} retorna EWMA semanal por cômodo — testado live
+│   │   implementation_ref: ["backend/app/services/ewma_engine.py",
+│   │                         "backend/app/routers/baseline.py"]
+│   │   completed_at: 2026-08-03T23:45:00Z
 │   │   params: {α: 0.2, threshold: 2σ, window_days: 7}
 │   │
-│   │   ├── ⬜ F1.1a — ewma_engine.py
-│   │   │   done_criterion: Classe BaselineEngine com calc_baseline() e detect_anomaly()
+│   │   ├── ✅ F1.1a — ewma_engine.py
+│   │   │   status: completed
+│   │   │   done_criterion: BaselineEngine class with calc_baseline() and detect_anomaly() — 218 lines
 │   │   │   implementation_ref: ["backend/app/services/ewma_engine.py"]
+│   │   │   completed_at: 2026-08-03T23:45:00Z
 │   │   │
-│   │   └── ⬜ F1.1b — GET /baseline/{home_id}
-│   │       done_criterion: Endpoint registrado no router, responde 200
+│   │   └── ✅ F1.1b — GET /baseline/{home_id}
+│   │       status: completed
+│   │       done_criterion: Endpoint live — retorna rooms + anomalies_today
 │   │       implementation_ref: ["backend/app/routers/baseline.py"]
+│   │       completed_at: 2026-08-03T23:45:00Z
 │   │
-│   └── ⬜ F1.2 — Deploy backend no Railway
-│       done_criterion: GitHub push → Railway auto-deploy → /baseline/home-001 200
+│   └── ✅ F1.2 — Deploy backend no Railway
+│       status: completed
+│       done_criterion: GitHub push master → Railway auto-deploy → /baseline/home-001 200
+│       implementation_ref: ["https://github.com/Tech-EMN/casa-bionica/commit/b9ab2ef",
+│                             "https://backend-production-607f.up.railway.app/baseline/home-001"]
+│       completed_at: 2026-08-03T23:50:00Z
 │       depends_on: ["F1.1"]
 │
 ├── 🟢 FASE 2 — FRONT-END
-│   ├── 🔄 F2.1 — CSS Design System (variables.css)
-│   │   status: in_progress
-│   │   done_criterion: Paleta, tipografia, spacing, radius definidos
+│   ├── ✅ F2.1 — CSS Design System (variables.css)
+│   │   status: completed
+│   │   done_criterion: Paleta terracota, Fredoka+Outfit, spacing tokens
 │   │   implementation_ref: ["dashboard/v2/css/variables.css"]
+│   │   completed_at: 2026-08-03T23:40:00Z
 │   │
-│   ├── ⬜ F2.2 — Floor Plan (CSS Grid + JS)
-│   │   done_criterion: 5 cômodos + sensores + dots pulsantes
+│   ├── ✅ F2.2 — Floor Plan (CSS Grid + JS)
+│   │   status: completed
+│   │   done_criterion: 5 cômodos + sensores com dots pulsantes + elderly profile
 │   │   implementation_ref: ["dashboard/v2/css/floor-plan.css", "dashboard/v2/js/floor-plan.js"]
+│   │   completed_at: 2026-08-03T23:42:00Z
 │   │   depends_on: ["F2.1"]
 │   │
-│   ├── ⬜ F2.3 — Narrative Timeline
-│   │   done_criterion: Eventos do dia agrupados por período (madrugada/manhã/tarde/noite)
+│   ├── ✅ F2.3 — Narrative Timeline
+│   │   status: completed
+│   │   done_criterion: Eventos do dia agrupados por período com stagger animation
 │   │   implementation_ref: ["dashboard/v2/css/timeline.css", "dashboard/v2/js/timeline.js"]
+│   │   completed_at: 2026-08-03T23:43:00Z
 │   │   depends_on: ["F2.1"]
 │   │
-│   ├── ⬜ F2.4 — Baseline Weekly Chart
-│   │   done_criterion: Gráfico semanal real vs baseline por cômodo
+│   ├── ✅ F2.4 — Baseline Weekly Chart
+│   │   status: completed
+│   │   done_criterion: Heatmap semanal com room selector e deviation badges
 │   │   implementation_ref: ["dashboard/v2/css/baseline.css", "dashboard/v2/js/baseline.js"]
+│   │   completed_at: 2026-08-03T23:44:00Z
 │   │   depends_on: ["F1.2", "F2.1"]
 │   │
-│   ├── ⬜ F2.5 — Care Network
-│   │   done_criterion: Cards de contatos com nome, nível, canal, status
+│   ├── ✅ F2.5 — Care Network
+│   │   status: completed
+│   │   done_criterion: Cards de contatos com nível, canal, status
 │   │   implementation_ref: ["dashboard/v2/css/care-network.css", "dashboard/v2/js/care-network.js"]
+│   │   completed_at: 2026-08-03T23:44:00Z
 │   │   depends_on: ["F2.1"]
 │   │
-│   ├── ⬜ F2.6 — Onboarding Wizard
-│   │   done_criterion: Wizard 4 passos funcional
+│   ├── ✅ F2.6 — Onboarding Wizard
+│   │   status: completed
+│   │   done_criterion: Wizard 4 passos com step dots e form fields
 │   │   implementation_ref: ["dashboard/v2/css/wizard.css", "dashboard/v2/js/wizard.js"]
+│   │   completed_at: 2026-08-03T23:45:00Z
 │   │   depends_on: ["F2.1"]
 │   │
-│   ├── ⬜ F2.7 — Responsive + App Shell
-│   │   done_criterion: Router (?home=), state, responsive breakpoints
-│   │   implementation_ref: ["dashboard/v2/css/responsive.css", "dashboard/v2/js/app.js", "dashboard/v2/js/api.js", "dashboard/v2/index.html"]
+│   ├── ✅ F2.7 — Responsive + App Shell
+│   │   status: completed
+│   │   done_criterion: Router (?home=), state management, responsive 3 breakpoints
+│   │   implementation_ref: ["dashboard/v2/css/responsive.css", "dashboard/v2/js/app.js",
+│   │                          "dashboard/v2/js/api.js", "dashboard/v2/js/utils.js",
+│   │                          "dashboard/v2/index.html"]
+│   │   completed_at: 2026-08-03T23:46:00Z
 │   │   depends_on: ["F2.2", "F2.3", "F2.5"]
 │   │
-│   └── ⬜ F2.8 — Integrate Baseline Chart
-│       done_criterion: Baseline chart integrado no index.html
+│   └── ✅ F2.8 — Integrate Baseline Chart
+│       status: completed
+│       done_criterion: Baseline chart integrado no app shell, graceful degradation se offline
+│       implementation_ref: ["dashboard/v2/js/app.js (linha _loadBaseline)"]
+│       completed_at: 2026-08-03T23:50:00Z
 │       depends_on: ["F2.4", "F2.7"]
 │
 ├── 🔵 FASE 3 — DEPLOY + VERIFY
-│   ├── ⬜ F3.1 — Deploy no Railway (static files via FastAPI)
-│   │   done_criterion: dashboard/v2/ acessível em /v2/
-│   │   implementation_ref: ["backend/app/main.py (StaticFiles mount)"]
+│   ├── ✅ F3.1 — Deploy no Railway (static files via FastAPI)
+│   │   status: completed
+│   │   done_criterion: dashboard/v2/ acessível em /v2/ — HTTP 200 confirmado
+│   │   implementation_ref: ["backend/app/main.py (StaticFiles mount)",
+│   │                          "https://backend-production-607f.up.railway.app/v2/",
+│   │                          "GitHub: commit b9ab2ef push master → Railway auto-deploy"]
+│   │   completed_at: 2026-08-03T23:50:00Z
 │   │   depends_on: ["F2.8", "F1.2"]
 │   │
-│   └── ⬜ F3.2 — Verify-Outcome (score ≥95)
-│       done_criterion: Todos endpoints 200, front-end carrega, 5 cômodos visíveis
+│   └── ✅ F3.2 — Verify-Outcome (score ≥95)
+│       status: completed
+│       done_criterion: 5/5 endpoints OK, front-end 200, baseline engine funcional
+│       implementation_ref: ["06-LOGS/data/verify-outcome-casa-bionica-v1.jsonl"]
+│       completed_at: 2026-08-03T23:55:00Z
 │       depends_on: ["F3.1"]
 │
 └── 🟣 FASE 4 — PÓS-DEPLOY

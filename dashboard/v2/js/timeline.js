@@ -109,7 +109,7 @@ const Timeline = {
             <span class="timeline-event__time">${time}</span>
             <span class="timeline-event__emoji">${emoji}</span>
             <span class="timeline-event__desc">${desc}</span>
-            <span class="timeline-event__duration">${event.distance_mm}mm</span>
+            <span class="timeline-event__duration">${event.direction === 'entry' ? '▶ Entrada' : '◀ Saída'}</span>
             <span class="timeline-event__indicator indicator--normal">✅</span>
           </div>`;
       }).join('');

@@ -75,7 +75,7 @@ const App = {
         <div class="app-error-banner" id="app-error"></div>
 
         <div id="app-loading" style="text-align:center;padding:var(--space-2xl);color:var(--color-muted);font-size:1rem;">
-          🌿 Carregando...
+          🏠 Carregando Casa Biônica...
         </div>
 
         <div id="app-content" style="display:none">
