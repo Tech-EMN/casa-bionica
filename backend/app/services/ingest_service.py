@@ -43,7 +43,7 @@ class IngestService:
         # Resolve device
         device = self._resolve_device(payload.sensor_id)
         if device is None:
-            *** ValueError(f"Device not found: {payload.sensor_id}")
+            raise ValueError(f"Device not found: {payload.sensor_id}")
 
         data = {
             "id": str(uuid4()),

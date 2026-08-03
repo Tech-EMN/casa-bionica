@@ -18,7 +18,7 @@ def home_status(home_id: str):
     resp.raise_for_status()
     homes = resp.json()
     if not homes:
-        *** HomeStatusResponse(home_id=home_id, home_name="unknown", elderly_name="unknown")
+        return HomeStatusResponse(home_id=home_id, home_name="unknown", elderly_name="unknown")
 
     home = homes[0]
 
