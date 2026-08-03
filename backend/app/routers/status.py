@@ -14,7 +14,7 @@ def home_status(home_id: str):
     client = get_client()
 
     # Home info — query by home_id (text field, not UUID)
-    resp = client.get("/homes", params={"home_id": f"eq.{home_id}", "limit": "1"})
+    resp = client.get("/homes", params={"home_id_text": f"eq.{home_id}", "limit": "1"})
     resp.raise_for_status()
     homes = resp.json()
     if not homes:
@@ -22,11 +22,11 @@ def home_status(home_id: str):
 
     home = homes[0]
 
-    # Devices
+    # Devices — use home_id_text (text field, not UUID)
     resp = client.get(
         "/devices",
         params={
-            "home_id": f"eq.{home_id}",
+            "home_id_text": f"eq.{home_id}",
             "select": "sensor_id,status,passages(name,passage_type)",
         },
     )
@@ -52,7 +52,7 @@ def home_status(home_id: str):
     resp = client.get(
         "/alerts",
         params={
-            "home_id": f"eq.{home_id}",
+            "home_id_text": f"eq.{home_id}",
             "status": "in.(pending,notified)",
             "limit": "50",
         },
@@ -63,7 +63,7 @@ def home_status(home_id: str):
     # Emergency contacts
     resp = client.get(
         "/emergency_contacts",
-        params={"home_id": f"eq.{home_id}", "order": "priority.asc"},
+        params={"home_id_text": f"eq.{home_id}", "order": "priority.asc"},
     )
     resp.raise_for_status()
     contacts = resp.json()
