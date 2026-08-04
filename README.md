@@ -50,7 +50,9 @@ ESP32-C3 (4×) ──HTTP POST──→ Railway (FastAPI) ──HTTPS──→ S
 | [`arquitetura/STACK-DECISION.md`](arquitetura/STACK-DECISION.md) | Análise comparativa de stacks |
 | [`arquitetura/REFERENCIAS-projetos.md`](arquitetura/REFERENCIAS-projetos.md) | 4 projetos referência analisados |
 | [`arquitetura/IMPLEMENTATION-SEED.md`](arquitetura/IMPLEMENTATION-SEED.md) | ⚠️ Desatualizado — ver abaixo |
-| [`formularios/`](formularios/) | F2, F3, F4 extraídos da PARTE V do workbook |
+| [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) | Runbook 8 cenários |
+| [`docs/DEPLOY.md`](docs/DEPLOY.md) | Deploy & manutenção |
+| [`docs/FRONTEND-V1-SPEC.md`](docs/FRONTEND-V1-SPEC.md) | Especificação do front-end V1 |
 | [`backend/alembic/versions/002_full_schema.sql`](backend/alembic/versions/002_full_schema.sql) | Schema SQL completo |
 
 > ⚠️ `IMPLEMENTATION-SEED.md` descreve a arquitetura ORIGINAL (asyncpg + SQLAlchemy). A arquitetura REAL é PostgREST (ver `backend/app/database.py`). O ADR da migração está pendente.
@@ -76,9 +78,9 @@ users → user_homes ← homes
 | ADR | Decisão | Status |
 |-----|---------|:---:|
 | ADR-001 | Python + FastAPI (AX 7.7) | ✅ Documentado em AX-DECISION.md |
-| ADR-002 | HTTP POST direto (ESP32→Backend) | ⬜ Pendente |
-| ADR-003 | PostgREST em vez de SQLAlchemy direto | ⬜ Pendente |
-| ADR-004 | Schema v2 (9 tabelas, 10 business rules) | ⬜ Pendente |
+| ADR-002 | HTTP POST direto (ESP32→Backend) | ✅ [`ADR-002`](docs/adr/ADR-002-protocolo-sensor.md) |
+| ADR-003 | PostgREST em vez de SQLAlchemy direto | ✅ [`ADR-003`](docs/adr/ADR-003-postgrest-vs-sqlalchemy.md) |
+| ADR-004 | Schema v2 (9 tabelas, 10 business rules) | ✅ [`ADR-004`](docs/adr/ADR-004-schema-v2.md) |
 
 ## 🏷️ Version
 
