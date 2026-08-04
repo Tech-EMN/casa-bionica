@@ -8,7 +8,7 @@ const Baseline = {
   async render(containerId, homeId) {
     const c = document.getElementById(containerId);
     if (!c) return;
-    c.innerHTML = `<div class="glass-card baseline-panel" id="baseline-inner"></div>`;
+    c.innerHTML = `<div class="card baseline-panel" id="baseline-inner"></div>`;
     try {
       const data = await API.get(`/baseline/${homeId}`);
       this._render(data);

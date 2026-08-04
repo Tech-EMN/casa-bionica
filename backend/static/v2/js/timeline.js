@@ -20,7 +20,7 @@ const Timeline = {
     const container = document.getElementById(containerId);
     if (!container) return;
     const from = new Date(); from.setHours(0,0,0,0);
-    container.innerHTML = `<div class="glass-card timeline-panel" id="timeline-inner"></div>`;
+    container.innerHTML = `<div class="card timeline-panel" id="timeline-inner"></div>`;
     try {
       const events = await API.get(`/events?home_id=${homeId}&from=${from.toISOString()}&limit=60`);
       this._render(events);

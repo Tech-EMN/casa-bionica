@@ -1,279 +1,87 @@
-/* Floor Plan — SVG house with sensor nodes (professional health-tech) */
+/* Floor Plan — Professional light theme */
 
-.floor-plan {
-  padding: var(--space-6);
-  margin-bottom: var(--space-6);
-}
+.floor-plan { padding: var(--space-6); margin-bottom: var(--space-6); }
+.floor-plan__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-6); }
+.floor-plan__title-group h2 { font-size: 1.1rem; font-weight: 600; color: var(--color-text); }
+.floor-plan__title-group p { font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px; }
+.floor-plan__home-selector { font-size: 0.75rem; color: var(--color-text-muted); background: var(--color-surface); border: 1px solid var(--color-glass-border); border-radius: var(--radius-sm); padding: 4px 10px; cursor: pointer; font-family: var(--font-mono); }
 
-.floor-plan__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--space-6);
-}
-
-.floor-plan__title-group h2 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.floor-plan__title-group p {
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
-  margin-top: 2px;
-}
-
-.floor-plan__home-selector {
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-  background: var(--color-surface);
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-sm);
-  padding: 4px 12px;
-  cursor: pointer;
-  font-family: var(--font-mono);
-}
-
-/* ── House Grid — CSS Grid with SVG-shaped rooms ── */
+/* ── House Grid ── */
 .house-grid {
   display: grid;
   grid-template-columns: 1.3fr 0.7fr 1fr;
   grid-template-rows: auto auto auto;
-  grid-template-areas:
-    "quarto    hallway  kitchen"
-    "bathroom  hallway  living"
-    "bathroom  entrance living";
-  gap: var(--space-3);
-  min-height: 360px;
+  grid-template-areas: "quarto hallway kitchen" "bathroom hallway living" "bathroom entrance living";
+  gap: var(--space-3); min-height: 360px;
 }
 
-/* ── Room Card (glass card variant) ── */
+/* ── Room ── */
 .room {
-  position: relative;
-  background: var(--color-surface);
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  transition: all var(--duration-300) var(--ease-out);
-  cursor: default;
-  min-height: 80px;
+  position: relative; background: var(--color-bg); border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-md); padding: var(--space-4);
+  display: flex; flex-direction: column; transition: all var(--duration-300) var(--ease-out);
+  cursor: default; min-height: 80px;
 }
+.room:hover { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.12); }
+.room--active { border-color: var(--color-accent); background: var(--color-accent-dim); }
+.room--alert  { border-color: var(--color-danger); background: var(--color-danger-dim); animation: room-alert 2s ease-in-out infinite; }
+@keyframes room-alert { 0%,100% { box-shadow: 0 0 0 rgba(220,38,38,0); } 50% { box-shadow: 0 0 16px rgba(220,38,38,0.1); } }
 
-.room:hover {
-  background: var(--color-surface-hover);
-  border-color: rgba(255,255,255,0.1);
-}
-
-.room--active {
-  border-color: var(--color-accent);
-  background: var(--color-accent-dim);
-  box-shadow: 0 0 20px rgba(0, 212, 170, 0.08);
-}
-
-.room--alert {
-  border-color: var(--color-danger);
-  background: var(--color-danger-dim);
-  animation: room-alert 2s ease-in-out infinite;
-}
-
-@keyframes room-alert {
-  0%, 100% { box-shadow: 0 0 0 rgba(239,68,68,0); }
-  50%      { box-shadow: 0 0 24px rgba(239,68,68,0.15); }
-}
-
-/* ── Room Header ── */
-.room__header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-2);
-}
-
-.room__icon {
-  width: 18px;
-  height: 18px;
-  opacity: 0.7;
-  flex-shrink: 0;
-}
-
-.room__icon svg {
-  width: 100%;
-  height: 100%;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.room__label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--color-text);
-  letter-spacing: -0.01em;
-}
-
+.room__header { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+.room__icon { width: 18px; height: 18px; opacity: 0.6; flex-shrink: 0; }
+.room__icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.room__label { font-size: 0.8rem; font-weight: 600; color: var(--color-text); letter-spacing: -0.01em; }
 .room--active .room__icon { opacity: 1; color: var(--color-accent); }
 .room--alert  .room__icon { opacity: 1; color: var(--color-danger); }
 
-/* ── Room Body ── */
-.room__body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+.room__body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.room__status { font-size: 0.7rem; color: var(--color-text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+.room__duration { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--color-text); margin-top: 2px; letter-spacing: -0.01em; }
+.room__duration--attention { color: var(--color-warning); }
+.room__duration--critical  { color: var(--color-danger); }
 
-.room__status {
-  font-size: 0.72rem;
-  color: var(--color-text-muted);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.room__duration {
-  font-family: var(--font-mono);
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--color-text);
-  margin-top: 2px;
-  letter-spacing: -0.01em;
-}
-
-.room__duration--attention {
-  color: var(--color-warning);
-}
-
-.room__duration--critical {
-  color: var(--color-danger);
-}
-
-/* ── Sensor Dot (small circle on room edge) ── */
+/* ── Sensor Dot ── */
 .sensor-dot {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--color-text-muted);
-  border: 2px solid var(--color-bg-elevated);
-  z-index: 3;
+  position: absolute; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--color-text-muted); border: 2px solid #fff; z-index: 3;
   transition: all var(--duration-300) var(--ease-out);
 }
-
 .sensor-dot--active { background: var(--color-ok); }
 .sensor-dot--last   { background: var(--color-accent); animation: dot-pulse 2s ease-in-out infinite; }
 .sensor-dot--alert  { background: var(--color-danger); animation: dot-pulse 0.8s ease-in-out infinite; }
+@keyframes dot-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(5,150,105,0.3); } 50% { box-shadow: 0 0 0 10px rgba(5,150,105,0); } }
 
-@keyframes dot-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,170,0.4); }
-  50%      { box-shadow: 0 0 0 10px rgba(0,212,170,0); }
-}
-
-/* Sensor positions */
 .sensor-dot--quarto-hall   { bottom: -5px; left: 50%; transform: translateX(-50%); }
 .sensor-dot--bath-hall     { right: -5px; top: 50%; transform: translateY(-50%); }
 .sensor-dot--kitchen-hall  { bottom: -5px; left: 50%; transform: translateX(-50%); }
 .sensor-dot--living-hall   { left: -5px; top: 50%; transform: translateY(-50%); }
 .sensor-dot--entrance      { top: -5px; left: 50%; transform: translateX(-50%); }
 
-/* ── Room Grid Areas ── */
-.room--quarto   { grid-area: quarto; }
-.room--bathroom { grid-area: bathroom; }
-.room--kitchen  { grid-area: kitchen; }
-.room--living   { grid-area: living; }
-.room--hallway  { grid-area: hallway; }
-.room--entrance { grid-area: entrance; }
+/* ── Grid Areas ── */
+.room--quarto{grid-area:quarto}.room--bathroom{grid-area:bathroom}.room--kitchen{grid-area:kitchen}
+.room--living{grid-area:living}.room--entrance{grid-area:entrance}
+.room--hallway{grid-area:hallway;background:transparent;border:none;pointer-events:none;min-height:auto}
+.room--entrance{min-height:56px}
 
-/* ── Hallway (visual connector, no content) ── */
-.room--hallway {
-  background: transparent;
-  border: none;
-  pointer-events: none;
-  min-height: auto;
-}
-
-/* ── Entrance ── */
-.room--entrance {
-  min-height: 56px;
-}
-
-/* ── Elderly Card (top of floor plan) ── */
+/* ── Elderly Card ── */
 .elderly-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4);
-  margin-bottom: var(--space-6);
-  background: var(--color-surface);
-  border: 1px solid var(--color-glass-border);
+  display: flex; align-items: center; gap: var(--space-4);
+  padding: var(--space-4); margin-bottom: var(--space-6);
+  background: var(--color-bg); border: 1px solid var(--color-glass-border);
   border-radius: var(--radius-lg);
 }
-
 .elderly-card__avatar {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #00d4aa 0%, #60a5fa 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #080c12;
-  flex-shrink: 0;
+  width: 48px; height: 48px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 700; color: #fff; flex-shrink: 0;
 }
+.elderly-card__info{flex:1}
+.elderly-card__name{font-size:1rem;font-weight:600;color:var(--color-text)}
+.elderly-card__meta{font-size:0.78rem;color:var(--color-text-secondary);margin-top:2px}
+.elderly-card__metrics{display:flex;gap:var(--space-6)}
+.elderly-metric{text-align:center}
+.elderly-metric__value{font-size:1.2rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.elderly-metric__label{font-size:0.65rem;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
 
-.elderly-card__info {
-  flex: 1;
-}
-
-.elderly-card__name {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.elderly-card__meta {
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
-  margin-top: 2px;
-}
-
-.elderly-card__metrics {
-  display: flex;
-  gap: var(--space-6);
-}
-
-.elderly-metric {
-  text-align: center;
-}
-
-.elderly-metric__value {
-  font-size: 1.3rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-
-.elderly-metric__label {
-  font-size: 0.68rem;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 500;
-}
-
-/* ── Floor plan error ── */
-.floor-plan__error {
-  display: none;
-  color: var(--color-danger);
-  font-size: 0.78rem;
-  margin-top: var(--space-4);
-  padding: var(--space-3);
-  background: var(--color-danger-dim);
-  border-radius: var(--radius-sm);
-}
+.floor-plan__error{display:none;color:var(--color-danger);font-size:0.75rem;margin-top:var(--space-4);padding:var(--space-3);background:var(--color-danger-dim);border-radius:var(--radius-sm)}

@@ -20,7 +20,7 @@ const FloorPlan = {
 
   _template(homeId) {
     return `
-      <div class="glass-card floor-plan">
+      <div class="card floor-plan">
         <div class="floor-plan__header">
           <div class="floor-plan__title-group">
             <h2>Planta da Residência</h2>
@@ -116,9 +116,11 @@ const FloorPlan = {
     // Mark active devices
     (data.devices || []).forEach(dev => {
       if (dev.status === 'active') {
-        const slug = dev.passage_name?.toLowerCase().normalize('NFD').replace(/[^a-z]/g,'') || '';
-        document.getElementById(`dot-${dev.sensor_id}`)?.classList.add('sensor-dot--active');
-        document.getElementById(`status-${slug}`)?.textContent = 'Ativo';
+        const slug = (dev.passage_name || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g,'');
+        const dotEl = document.getElementById(`dot-${dev.sensor_id}`);
+        if (dotEl) dotEl.classList.add('sensor-dot--active');
+        const statusEl = document.getElementById(`status-${slug}`);
+        if (statusEl) statusEl.textContent = 'Ativo';
       }
     });
 
@@ -128,7 +130,8 @@ const FloorPlan = {
       if (dot) {
         dot.classList.add('sensor-dot--last');
         const roomSlug = (data.last_event.passage_name || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g,'');
-        document.getElementById(`room-${roomSlug}`)?.classList.add('room--active');
+        const roomEl = document.getElementById(`room-${roomSlug}`);
+        if (roomEl) roomEl.classList.add('room--active');
       }
     }
 

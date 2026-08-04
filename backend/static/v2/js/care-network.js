@@ -4,7 +4,7 @@ const CareNetwork = {
   async render(containerId, homeId) {
     const c = document.getElementById(containerId);
     if (!c) return;
-    c.innerHTML = `<div class="glass-card care-panel" id="care-inner"></div>`;
+    c.innerHTML = `<div class="card care-panel" id="care-inner"></div>`;
     try {
       const data = await API.get(`/status/${homeId}`);
       this._render(data);
