@@ -1,53 +1,38 @@
-/* Baseline Weekly JS — real vs expected room occupancy */
+/* Baseline JS — Activity rings per room (health-tech standard) */
 
 const Baseline = {
-  days: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'],
-  dayLabels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+  days: ['dom','seg','ter','qua','qui','sex','sab'],
+  dayLabels: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
   todayIndex: new Date().getDay(),
 
   async render(containerId, homeId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    container.innerHTML = `
-      <div class="baseline-weekly">
-        <h2 class="baseline-weekly__title">📊 Rotina Semanal</h2>
-        <p class="baseline-weekly__subtitle">Tempo de permanência: real vs esperado</p>
-        <div class="baseline-room-selector" id="baseline-room-selector"></div>
-        <div id="baseline-chart"><div class="baseline-loading">Carregando...</div></div>
-        <div class="baseline-summary" id="baseline-summary"></div>
-      </div>`;
-
+    const c = document.getElementById(containerId);
+    if (!c) return;
+    c.innerHTML = `<div class="glass-card baseline-panel" id="baseline-inner"></div>`;
     try {
       const data = await API.get(`/baseline/${homeId}`);
-      this._renderChart(data);
-    } catch (e) {
-      document.getElementById('baseline-chart').innerHTML = `
-        <div class="baseline-loading">
-          📡 Baseline ainda não disponível.<br>
-          <small style="color:var(--color-muted)">Período de calibração: 7 dias</small>
-        </div>`;
-    }
+      this._render(data);
+    } catch (e) { this._renderCalibrating(); }
   },
 
-  _renderChart(data) {
+  _render(data) {
     const rooms = Object.keys(data.rooms || {});
-    if (rooms.length === 0) {
-      document.getElementById('baseline-chart').innerHTML =
-        '<div class="baseline-loading">Nenhum dado de baseline disponível.</div>';
-      return;
-    }
+    if (!rooms.length) { this._renderCalibrating(); return; }
 
-    // Room selector
-    const selector = document.getElementById('baseline-room-selector');
-    selector.innerHTML = rooms.map((r, i) =>
-      `<button class="baseline-room-btn ${i === 0 ? 'baseline-room-btn--active' : ''}" data-room="${r}">${r}</button>`
-    ).join('');
+    const el = document.getElementById('baseline-inner');
+    let html = `
+      <div class="baseline-panel__header"><span class="baseline-panel__title">Rotina Semanal</span><span class="baseline-panel__period">${data.window_days || 7} dias</span></div>
+      <div class="baseline-rooms" id="baseline-rooms">${rooms.map((r,i) => `<button class="baseline-room-pill ${i===0?'baseline-room-pill--active':''}" data-room="${r}">${r}</button>`).join('')}</div>
+      <div id="baseline-chart"></div>
+      <div class="baseline-summary baseline-summary--ok" id="baseline-summary">✅ Sem desvios significativos</div>
+    `;
+    el.innerHTML = html;
 
-    selector.querySelectorAll('.baseline-room-btn').forEach(btn => {
+    // Bind room selector
+    el.querySelectorAll('.baseline-room-pill').forEach(btn => {
       btn.addEventListener('click', () => {
-        selector.querySelectorAll('.baseline-room-btn').forEach(b => b.classList.remove('baseline-room-btn--active'));
-        btn.classList.add('baseline-room-btn--active');
+        el.querySelectorAll('.baseline-room-pill').forEach(b => b.classList.remove('baseline-room-pill--active'));
+        btn.classList.add('baseline-room-pill--active');
         this._renderRoom(btn.dataset.room, data);
       });
     });
@@ -59,50 +44,56 @@ const Baseline = {
     const roomData = data.rooms[room];
     if (!roomData) return;
 
-    const maxMin = Math.max(...this.days.map(d => {
-      const day = roomData[d];
-      return Math.max(day?.real_min || 0, day?.baseline_min || 0);
-    }), 1);
+    const maxMin = Math.max(...this.days.map(d => roomData[d]?.real_min || roomData[d]?.baseline_min || 0), 1);
+    const R = 18, C = 2*Math.PI*R, strokeW = 4;
 
-    const chart = document.getElementById('baseline-chart');
-    chart.innerHTML = `
+    document.getElementById('baseline-chart').innerHTML = `
       <div class="baseline-grid">
         ${this.days.map((d, i) => {
           const day = roomData[d] || {};
-          const realPct = Math.min(((day.real_min || 0) / maxMin) * 100, 100);
-          const basePct = Math.min(((day.baseline_min || 0) / maxMin) * 100, 100);
+          const real = day.real_min || 0;
+          const base = day.baseline_min || 0;
+          const pct = Math.min(real / Math.max(maxMin, 1), 1);
+          const offset = C * (1 - pct);
           const dev = day.deviation || 0;
+          const ringClass = dev > 1 ? (dev > 2 ? 'baseline-ring--danger' : 'baseline-ring--warning') : '';
           const isToday = i === this.todayIndex;
-
-          let devClass = 'normal';
-          let devLabel = 'Normal';
-          if (dev > 2) { devClass = 'critical'; devLabel = '⚠ Crítico'; }
-          else if (dev > 1) { devClass = 'warning'; devLabel = '⚠ Acima'; }
 
           return `
             <div class="baseline-day">
-              <div class="baseline-day__label ${isToday ? 'baseline-day__label--today' : ''}">
-                ${this.dayLabels[i]}${isToday ? ' •' : ''}
+              <div class="baseline-day__label ${isToday ? 'baseline-day__label--today' : ''}">${this.dayLabels[i]}</div>
+              <div class="baseline-ring ${ringClass}">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                  <circle class="baseline-ring__bg" cx="22" cy="22" r="${R}"/>
+                  <circle class="baseline-ring__fill" cx="22" cy="22" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="${offset}"/>
+                </svg>
+                <div class="baseline-ring__center">
+                  <span class="baseline-ring__value">${real}</span>
+                  <span class="baseline-ring__unit">min</span>
+                </div>
               </div>
-              <div class="baseline-bars">
-                <div class="baseline-bar baseline-bar--real" style="height:${realPct}px" title="Real: ${day.real_min || 0} min"></div>
-                <div class="baseline-bar baseline-bar--baseline" style="height:${basePct}px" title="Baseline: ${day.baseline_min || 0} min"></div>
-                <span class="baseline-bar__value">${day.real_min || 0}m</span>
-              </div>
-              ${dev > 0.5 ? `<span class="baseline-deviation baseline-deviation--${devClass}">${devLabel}</span>` : ''}
             </div>`;
         }).join('')}
       </div>`;
 
-    // Summary
+    // Check anomalies
+    const anomalies = (data.anomalies_today || []).filter(a => a.passage_name === room);
     const summary = document.getElementById('baseline-summary');
-    const hasAnomalies = data.anomalies_today?.some(a => a.room === room);
-    if (hasAnomalies) {
+    if (anomalies.length) {
       summary.className = 'baseline-summary baseline-summary--warn';
-      summary.textContent = '⚠️ Desvios detectados hoje — verifique a timeline.';
+      summary.textContent = `⚠️ ${anomalies.length} desvio${anomalies.length>1?'s':''} detectado${anomalies.length>1?'s':''} hoje`;
     } else {
       summary.className = 'baseline-summary baseline-summary--ok';
-      summary.textContent = '✅ Sem desvios significativos nesta semana.';
+      summary.textContent = '✅ Sem desvios significativos';
     }
+  },
+
+  _renderCalibrating() {
+    document.getElementById('baseline-inner').innerHTML = `
+      <div class="baseline-panel__header"><span class="baseline-panel__title">Rotina Semanal</span></div>
+      <div class="timeline-empty">
+        <div class="timeline-empty__icon"><svg viewBox="0 0 40 40" stroke="currentColor" fill="none" stroke-width="1.5"><circle cx="20" cy="20" r="15"/><polyline points="12,20 18,14 20,20 28,20"/></svg></div>
+        <div class="timeline-empty__text">Período de calibração — 7 dias</div>
+      </div>`;
   }
 };

@@ -1,51 +1,69 @@
-/* Casa Biônica "Raízes" — Design Tokens */
-/* Anti-slop: zero Inter, zero purple gradient, zero default shadows */
+/* Casa Biônica "Pulso" — Professional Dark Theme Design System */
+/* Reference: Nobi, CarePredict, Apple Health — health-tech monitoring standard */
 
 :root {
-  /* Palette — warm human, not hospital */
-  --color-bg:       #faf7f2;
-  --color-surface:  #ffffff;
-  --color-text:     #1a1815;
-  --color-muted:    #8c8279;
-  --color-accent:   #c7745e;
-  --color-accent2:  #5b8c5a;
-  --color-warning:  #e8a838;
-  --color-danger:   #c75050;
-  --color-border:   #e8e0d5;
-  --color-hover:    #f3ede6;
+  /* ── Dark Slate Background ── */
+  --color-bg:        #080c12;
+  --color-bg-elevated:#0f141c;
+  --color-surface:   rgba(255,255,255,0.04);
+  --color-surface-hover: rgba(255,255,255,0.07);
+  --color-glass:     rgba(18, 24, 36, 0.85);
+  --color-glass-border: rgba(255,255,255,0.06);
 
-  /* Typography — Fredoka + Outfit, not Inter */
-  --font-display:   'Fredoka', sans-serif;
-  --font-body:      'Outfit', sans-serif;
-  --font-mono:      'SF Mono', 'Fira Code', monospace;
+  /* ── Text ── */
+  --color-text:       #e8ecf1;
+  --color-text-secondary: #8896a6;
+  --color-text-muted: #546374;
 
-  /* Spacing */
-  --space-xs:       4px;
-  --space-sm:       8px;
-  --space-md:       16px;
-  --space-lg:       24px;
-  --space-xl:       40px;
-  --space-2xl:      64px;
+  /* ── Accents ── */
+  --color-accent:     #00d4aa;   /* teal — medical but warm */
+  --color-accent-dim: rgba(0, 212, 170, 0.12);
+  --color-ok:         #22c55e;   /* green — normal status */
+  --color-ok-dim:     rgba(34, 197, 94, 0.12);
+  --color-warning:    #f59e0b;   /* amber — attention */
+  --color-warning-dim:rgba(245, 158, 11, 0.12);
+  --color-danger:     #ef4444;   /* red — alert */
+  --color-danger-dim: rgba(239, 68, 68, 0.12);
+  --color-info:       #60a5fa;   /* blue — info */
 
-  /* Radius */
-  --radius-sm:      8px;
-  --radius-md:      16px;
-  --radius-lg:      24px;
+  /* ── Typography — Inter for readability (health-tech standard) ── */
+  --font-sans:        'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:        'JetBrains Mono', 'SF Mono', monospace;
+  --font-display:     'Inter', sans-serif;
 
-  /* Shadows — deliberate, not default */
-  --shadow-soft:    0 2px 8px rgba(26, 24, 21, 0.06);
-  --shadow-card:    0 4px 16px rgba(26, 24, 21, 0.08);
-  --shadow-lift:    0 8px 32px rgba(26, 24, 21, 0.12);
+  /* ── Spacing (4px rhythm) ── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 
-  /* Transitions */
-  --ease-out:       cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out:    cubic-bezier(0.65, 0, 0.35, 1);
-  --duration-fast:  150ms;
-  --duration-base:  300ms;
-  --duration-slow:  600ms;
+  /* ── Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg:  0 8px 30px rgba(0,0,0,0.6);
+  --shadow-glow: 0 0 20px rgba(0, 212, 170, 0.15);
+
+  /* ── Transitions ── */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-150: 150ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
 }
 
-/* Reset */
+/* ── Reset & Base ── */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -53,37 +71,125 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   background: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.6;
+  line-height: 1.5;
   min-height: 100vh;
+  /* Subtle radial gradient for depth */
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 212, 170, 0.06), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(96, 165, 250, 0.04), transparent);
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-}
-
-/* Utility: sr-only */
+/* ── Utility ── */
 .sr-only {
-  position: absolute;
-  width: 1px;
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); border: 0;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+  background: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Status Badge ── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.status-badge--ok     { background: var(--color-ok-dim); color: var(--color-ok); }
+.status-badge--warning{ background: var(--color-warning-dim); color: var(--color-warning); }
+.status-badge--danger { background: var(--color-danger-dim); color: var(--color-danger); }
+.status-badge--info   { background: rgba(96,165,250,0.12); color: var(--color-info); }
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  display: inline-block;
+}
+.status-dot--ok      { background: var(--color-ok); box-shadow: 0 0 6px var(--color-ok); }
+.status-dot--warning { background: var(--color-warning); box-shadow: 0 0 6px var(--color-warning); }
+.status-dot--danger  { background: var(--color-danger); box-shadow: 0 0 6px var(--color-danger); }
+.status-dot--pulse   { animation: status-pulse 2s ease-in-out infinite; }
+
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 4px var(--color-ok); }
+  50%      { box-shadow: 0 0 14px var(--color-ok), 0 0 24px rgba(34,197,94,0.3); }
+}
+
+/* ── Metric Number ── */
+.metric-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+/* ── Divider ── */
+.divider {
   height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  border: 0;
+  background: var(--color-glass-border);
+  margin: var(--space-4) 0;
+}
+
+/* ── Skeleton Loading ── */
+.skeleton {
+  background: linear-gradient(90deg, var(--color-surface) 25%, rgba(255,255,255,0.05) 50%, var(--color-surface) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
