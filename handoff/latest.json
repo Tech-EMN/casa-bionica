@@ -1,0 +1,10 @@
+{
+  "agent": "daedalus",
+  "latest_handoff": "HANDOFF-20260804.md",
+  "latest_handoff_mode": "full",
+  "latest_handoff_trigger": "human-request",
+  "saved_at": "2026-08-04T01:45:00Z",
+  "verify_score": 96,
+  "current_node": "F3.2",
+  "next_node": "F4.1"
+}
